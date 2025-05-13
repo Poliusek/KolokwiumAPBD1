@@ -119,8 +119,8 @@ public class DeliveryService : IDeliveryService
         {
             cmd.Parameters.AddWithValue("@DeliveryId", id);
 
-            conn.Open();
-            var delivery = cmd.ExecuteScalar();
+            await conn.OpenAsync();
+            var delivery = await cmd.ExecuteScalarAsync();
             if (delivery is null)
                 return false;
             return true;
