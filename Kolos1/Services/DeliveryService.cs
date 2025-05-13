@@ -176,8 +176,8 @@ public class DeliveryService : IDeliveryService
             command.Parameters.AddWithValue("@LicenceNumber", input.LicenceNumber);
             command.Parameters.AddWithValue("@Date", DateTime.Now);
 
-            var id = await command.ExecuteScalarAsync();
-            if (id is not null)
+            var row = await command.ExecuteScalarAsync();
+            if (row is not null)
                 return -4;
             
             foreach (var product in input.Products)
@@ -188,8 +188,8 @@ public class DeliveryService : IDeliveryService
                 command.Parameters.AddWithValue("@ProductName", product.Name);
                 command.Parameters.AddWithValue("@Amount", product.Amount);
 
-                var error = await command.ExecuteScalarAsync();
-                if (error is not null)
+                row = await command.ExecuteScalarAsync();
+                if (row is not null)
                     return -5;
             }
 

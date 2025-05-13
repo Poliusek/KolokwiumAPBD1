@@ -32,7 +32,7 @@ namespace Kolos1.Controllers
         public IActionResult InsertDelivery([FromBody] DeliveryInputDto input)
         {
             if (_deliveryService.DeliveryExists(input.DeliveryId).Result)
-                return BadRequest("Delivery Exists");
+                return Conflict("Delivery Exists");
 
             var result = _deliveryService.CreateDelivery(input).Result;
             if (result == -1)
