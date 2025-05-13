@@ -22,9 +22,7 @@ namespace Kolos1.Controllers
                 return NotFound("Delivery not found");
             
             var response = _deliveryService.GetDelivery(id);
-            if (response == null || response.Result == null)
-                return NotFound("Delivery not found");
-            
+
             return Ok(response.Result);
         }
 
@@ -35,25 +33,23 @@ namespace Kolos1.Controllers
                 return Conflict("Delivery Exists");
 
             var result = _deliveryService.CreateDelivery(input).Result;
-            if (result == -1)
-                return NotFound("Customer not found");
-            if (result == -2)
-                return NotFound("Driver not found");
-            if (result == -3)
-                return NotFound("One or more products not found");
-            if (result == -4)
-                return BadRequest("Could not create delivery");
-            if (result == -5)
-                return BadRequest("Could not associate delivery with products");
-            if (result == 1)
-                return Created("api/deliveries", new
-                {
-                    Id = input.DeliveryId,
-                    input.CustomerId,
-                    input.LicenceNumber,
-                    Products = input.Products.Select(x=>x.Name)
-                });
-            return BadRequest("Could not create delivery");
+            return result switch
+            {
+                -1 => NotFound("Customer not found"),
+                -2 => NotFound("Driver not found"),
+                -3 => NotFound("One or more products not found"),
+                -4 => BadRequest("Could not create delivery"),
+                -5 => BadRequest("Could not associate delivery with products"),
+                1 => Created("api/deliveries",
+                    new
+                    {
+                        Id = input.DeliveryId,
+                        input.CustomerId,
+                        input.LicenceNumber,
+                        Products = input.Products.Select(x => x.Name)
+                    }),
+                _ => BadRequest("Could not create delivery")
+            };
         }
     }
 }
